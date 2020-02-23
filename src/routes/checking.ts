@@ -1,4 +1,4 @@
-import { googleUser, userInfo, dateString, isValid, uuid } from "../utils";
+import { googleUser, userInfo, dateString, uuid } from "../utils";
 import { db } from "../db";
 import { Checking, CheckingStatus, ReportStatus } from "../@types/checking";
 
@@ -6,8 +6,8 @@ import { Checking, CheckingStatus, ReportStatus } from "../@types/checking";
 global.checkingStatus = checkingStatus;
 function checkingStatus() {
   const user = googleUser();
-  const [checking] = db.from<Checking>('checking').query.select().where('date', dateString()).where('idUser', user.id).getResultsJson();
-  if (isValid(checking)) {
+  const [checking] = db.from<Checking>('checking').query.select().where('date', dateString()).where('idUser', user.id).toJSON();
+  if (checking) {
     if (checking.checkoutTime) {
       return { status: CheckingStatus.CheckedOut };
     }
@@ -41,7 +41,8 @@ function checkout() {
     throw 'Not valid';
   }
   checking.checkoutTime = new Date().toISOString();
-  db.from<Checking>('checking').update(checking.id, 'checkoutTime', checking.checkoutTime);
+  const setting = db.from('setting').getDataJSON()[0];
+  db.from<Checking>('checking').update(checking.id, { checkoutTime: checking.checkoutTime });
   return checking;
 }
 
@@ -60,7 +61,7 @@ function checkingList({ fromDate, toDate, reportStatus }) {
   if (reportStatus) {
     checkingsQuery.where('reportStatus', reportStatus);
   }
-  const checkings = checkingsQuery.getResultsJson().filter(c => isValid(c));
+  const checkings = checkingsQuery.toJSON();
   return checkings;
 }
 

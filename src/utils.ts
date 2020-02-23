@@ -1,16 +1,10 @@
 import uniqid from 'uniqid';
+import { Checking } from './@types/checking';
 import { GoogleUser, User } from "./@types/user";
-import { userCache } from "./const";
 import { db } from "./db";
 
-export function isValid(object) {
-  if (Array.isArray(object)) {
-    return object[0] && isValid(object[0]);
-  }
-  return Object.keys(object).length > 1;
-}
-
 export function googleUser(): GoogleUser {
+  const userCache = CacheService.getUserCache();
   let userInfo = JSON.parse(userCache.get('INFO'));
   if (!userInfo) {
     const user = People.People.get('people/me', { personFields: 'names' });
@@ -25,8 +19,8 @@ export function googleUser(): GoogleUser {
 }
 
 export function userInfo(): User {
-  const googleUserInfo = googleUser();
-  return db.from<User>('user').query.where('id', googleUserInfo.id).getResultsJson()[0];
+  const email = Session.getActiveUser().getEmail();
+  return db.from<User>('user').query.where('email', email).toJSON(1)[0];
 }
 
 export function dateString(date: Date = new Date()) {

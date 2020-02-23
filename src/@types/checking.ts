@@ -13,6 +13,8 @@ export interface Checking {
   reportContent?: string,
   responseContent?: string,
   reportStatus?: ReportStatus,
+  note?: string,
+  point?: number,
 }
 
 export enum CheckingStatus {

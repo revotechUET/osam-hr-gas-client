@@ -1,10 +1,18 @@
-import { googleUser, uuid, isValid } from "../utils";
+import { googleUser, uuid } from "../utils";
 import { db } from "../db";
 import { Leave, LeaveStatus } from "../@types/leave";
 
 global.leaveAdd = leaveAdd;
-function leaveAdd({ startTime, endTime, reason, description }) {
+function leaveAdd(params) {
+  const { startTime, endTime, reason, description } = params || {};
   const user = googleUser();
+  const leavesQuery = db.from<Leave>('leave').query;
+  leavesQuery.raw(
+    `SELECT * WHERE ${leavesQuery.getColId('idRequester')} ='${user.id}' AND
+     ((B >='${startTime}' AND B <='${endTime}') OR (C >= '${startTime}' AND C <='${endTime}'))`
+  )
+  const leaves = leavesQuery.toJSON();
+  if (leaves.length) throw 'Đã có yêu cầu nghỉ trong thời gian này';
   const leave: Leave = {
     id: uuid('lr-'),
     idRequester: user.id,
@@ -19,17 +27,18 @@ function leaveAdd({ startTime, endTime, reason, description }) {
 }
 
 global.leaveGet = leaveGet;
-function leaveGet({id}) {
+function leaveGet({ id }) {
   const user = googleUser();
-  const [leave] = db.from<Leave>('leave').query.where('id', id).where('idRequester', user.id).getResultsJson();
-  if (isValid(leave)) {
+  const [leave] = db.from<Leave>('leave').query.where('id', id).where('idRequester', user.id).toJSON();
+  if (leave) {
     return { ...leave, requester: user };
   }
   throw 'Not found';
 }
 
 global.leaveList = leaveList;
-function leaveList({ id, startTime, endTime, status }) {
+function leaveList(params) {
+  const { id, startTime, endTime, status } = params || {};
   const user = googleUser();
   const leavesQuery = db.from<Leave>('leave').query.where('idRequester', user.id);
   if (id) {
@@ -44,6 +53,6 @@ function leaveList({ id, startTime, endTime, status }) {
   if (status) {
     leavesQuery.where('status', status);
   }
-  const leaves = leavesQuery.getResultsJson().filter(i => isValid(i));
+  const leaves = leavesQuery.toJSON();
   return leaves;
 }
