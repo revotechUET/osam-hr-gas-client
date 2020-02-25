@@ -1,11 +1,11 @@
-import { areIntervalsOverlapping, eachDayOfInterval, endOfDay, endOfMonth, isSameDay, startOfMonth } from 'date-fns';
+import { areIntervalsOverlapping, eachDayOfInterval, endOfDay, endOfMonth, isSameDay, startOfMonth, getDate } from 'date-fns';
 import { Leave } from '../@types/leave';
 import { db } from '../db';
 import { userInfo } from '../utils';
 import { getSetting } from './setting';
 
 global.getPayroll = getPayroll;
-function getPayroll({ startDate, endDate }) {
+function getPayroll({ startDate, endDate, setting = null }) {
   if (!startDate || !endDate) throw 'Không có khoảng thời gian tính công';
   endDate = endOfDay(new Date(endDate)).toISOString();
   const { id } = userInfo();
@@ -22,16 +22,21 @@ function getPayroll({ startDate, endDate }) {
     .where('endTime', '>=', endDate)
     .toJSON()
     .map(l => ({ startTime: new Date(l.startTime), endTime: new Date(l.endTime) }));
-  const setting = getSetting();
+  setting = setting || getSetting();
   return getSummaries({ checkings, leaves, setting, startDate, endDate });
 }
 
 global.getPayrollThisMonth = getPayrollThisMonth;
 function getPayrollThisMonth() {
-  const now = new Date();
-  const startDate = startOfMonth(now).toISOString();
-  const endDate = endOfMonth(now).toISOString();
-  return getPayroll({ startDate, endDate });
+  const setting = getSetting();
+  let startDate = new Date();
+  const now = new Date(), date = now.getDate();
+  if (date <= setting.monthEnd) {
+    startDate.setMonth(now.getMonth() - 1, date);
+  } else {
+    startDate.setDate(date);
+  }
+  return getPayroll({ startDate: startDate.toISOString(), endDate: now });
 }
 
 function getSummaries({ startDate, endDate, checkings, leaves, setting }) {
@@ -50,7 +55,7 @@ function getSummaries({ startDate, endDate, checkings, leaves, setting }) {
   return { points, lunches, permittedLeaves, unpermittedLeaves };
 }
 
-function getDateSummaries(date: Date, checking, leave, setting) {
+function getDateSummaries(date, checking, leave, setting) {
   let point = 0, lunch = 0, permittedLeave = 0, unpermittedLeave = 0;
   const defaultReturn = { point, lunch, permittedLeave, unpermittedLeave };
   if (!checking && !leave) return defaultReturn;
@@ -70,7 +75,7 @@ function getDateSummaries(date: Date, checking, leave, setting) {
     ret.setFullYear(y, m, d);
     return ret;
   });
-  let late = 0, early = 0, total = 0, totalLeave = 0;
+  let late = 0, early = 0, total = 0, totalLeave = 0, ratio = 1;
   if (leave) {
     leave = {
       startTime: new Date(leave.startTime),
@@ -78,7 +83,7 @@ function getDateSummaries(date: Date, checking, leave, setting) {
     }
     totalLeave = leave.endTime - leave.startTime;
   }
-  let checkin: Date, checkout: Date;
+  let checkin, checkout;
   if (checking) {
     checkin = new Date(checking.checkinTime);
     checkin.setFullYear(y, m, d);
@@ -91,6 +96,7 @@ function getDateSummaries(date: Date, checking, leave, setting) {
       return defaultReturn;
     case 1: // morning only
       total = +morningEnd - +morningStart;
+      ratio = 0.5;
       if (!checking) break;
       late = Math.max(0, +checkin - +morningStart);
       early = Math.max(0, +morningEnd - +checkout);
@@ -104,6 +110,7 @@ function getDateSummaries(date: Date, checking, leave, setting) {
       break;
     case 2: // afternoon only
       total = +afternoonEnd - +afternoonStart;
+      ratio = 0.5;
       if (!checking) break;
       late = Math.max(0, +checkin - +afternoonStart);
       early = Math.max(0, +afternoonEnd - +checkout);
@@ -117,6 +124,7 @@ function getDateSummaries(date: Date, checking, leave, setting) {
       break;
     case 3: // all-day
       total = (+afternoonEnd - +afternoonStart) + (+morningEnd - +morningStart);
+      ratio = 1;
       if (!checking) break;
       if (checkin < afternoonStart) {
         late = Math.max(0, Math.min(+checkin, +morningEnd) - +morningStart);
@@ -147,7 +155,7 @@ function getDateSummaries(date: Date, checking, leave, setting) {
     permittedLeave = total;
   }
   unpermittedLeave = Math.max(0, late + early - permittedLeave);
-  point = (total - unpermittedLeave - permittedLeave) / total;
+  point = (total - unpermittedLeave - permittedLeave) / total * ratio;
   permittedLeave = permittedLeave / total;
   unpermittedLeave = unpermittedLeave / total;
   return { point: +point.toFixed(1), lunch, permittedLeave: +permittedLeave.toFixed(1), unpermittedLeave: +unpermittedLeave.toFixed(1) };

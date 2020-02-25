@@ -4,7 +4,7 @@
   "description": "",
   "dependencies": {
     "date-fns": "^2.9.0",
-    "gsheetdb": "github:revotechUET/gsheetdb#96a4fce",
+    "gsheetdb": "github:revotechUET/gsheetdb#0b8c238",
     "uniqid": "^5.2.0",
     "uuid": "^3.4.0"
   },
@@ -21,9 +21,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "push": "clasp push",
-    "start": "node script.js",
+    "build": "webpack -w",
+    "push": "clasp push -w -f",
+    "start": "node start.js",
     "deploy": "npm run build && clash push",
     "deploy:prod": "npx cross-env NODE_ENV=production npm run deploy"
   },

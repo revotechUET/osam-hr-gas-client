@@ -1,5 +1,4 @@
 import uniqid from 'uniqid';
-import { Checking } from './@types/checking';
 import { GoogleUser, User } from "./@types/user";
 import { db } from "./db";
 
