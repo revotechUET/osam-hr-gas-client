@@ -1,12 +1,17 @@
-import { googleUser, userInfo, dateString, uuid } from "../utils";
-import { db } from "../db";
+import { endOfDay, startOfDay, lightFormat } from "date-fns";
 import { Checking, CheckingStatus, ReportStatus } from "../@types/checking";
+import { db } from "../db";
+import { googleUser, uuid } from "../utils";
+import { getMonthInterval } from "./payroll";
 
+export function todayDateString() {
+  return startOfDay(new Date()).toISOString();
+}
 
 global.checkingStatus = checkingStatus;
 function checkingStatus() {
   const user = googleUser();
-  const [checking] = db.from<Checking>('checking').query.select().where('date', dateString()).where('idUser', user.id).toJSON();
+  const [checking] = db.from<Checking>('checking').query.select().where('date', todayDateString()).where('idUser', user.id).toJSON();
   if (checking) {
     if (checking.checkoutTime) {
       return { status: CheckingStatus.CheckedOut };
@@ -26,7 +31,7 @@ function checkin() {
   const checking: Checking = {
     id: uuid(),
     idUser: user.id,
-    date: dateString(),
+    date: todayDateString(),
     checkinTime: new Date().toISOString(),
     reportStatus: ReportStatus.None,
   }
@@ -48,15 +53,19 @@ function checkout() {
 
 global.checkingList = checkingList;
 function checkingList({ fromDate, toDate, reportStatus }) {
-  console.log(fromDate);
   const user = googleUser();
+  if (!fromDate && !toDate) {
+    const { start, end } = getMonthInterval(new Date());
+    fromDate = start;
+    toDate = end;
+  }
   const checkingsQuery = db.from<Checking>('checking').query
     .where('idUser', user.id);
   if (fromDate) {
-    checkingsQuery.where('date', '>=', dateString(fromDate));
+    checkingsQuery.where('date', '>=', startOfDay(new Date(fromDate)));
   }
   if (toDate) {
-    checkingsQuery.where('date', '<=', dateString(toDate));
+    checkingsQuery.where('date', '<=', endOfDay(new Date(toDate)));
   }
   if (reportStatus) {
     checkingsQuery.where('reportStatus', reportStatus);

@@ -17,19 +17,6 @@ export function googleUser(): GoogleUser {
   return userInfo;
 }
 
-export function userInfo(): User {
-  const email = Session.getActiveUser().getEmail();
-  return db.from<User>('user').query.where('email', email).toJSON(1)[0];
-}
-
-export function dateString(date: Date = new Date()) {
-  if (!date) return null
-  if (typeof date !== 'object') {
-    date = new Date(date);
-  }
-  return Utilities.formatDate(date, "GMT", "yyyy-MM-dd'T'00:00:00'Z'");
-}
-
 export function uuid(prefix?: string, suffix?: string) {
   return uniqid(prefix, suffix);
 }

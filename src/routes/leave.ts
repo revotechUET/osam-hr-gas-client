@@ -1,15 +1,17 @@
 import { googleUser, uuid } from "../utils";
 import { db } from "../db";
 import { Leave, LeaveStatus } from "../@types/leave";
+import { getMonthInterval } from "./payroll";
 
 global.leaveAdd = leaveAdd;
 function leaveAdd(params) {
   const { startTime, endTime, reason, description } = params || {};
   const user = googleUser();
   const leavesQuery = db.from<Leave>('leave').query;
+  const [statusCol, startTimeCol, endTimeCol] = ['status', 'startTime', 'endTime'].map(leavesQuery.getColId.bind(leavesQuery));
   leavesQuery.raw(
-    `SELECT * WHERE ${leavesQuery.getColId('idRequester')} ='${user.id}' AND
-     ((B >='${startTime}' AND B <='${endTime}') OR (C >= '${startTime}' AND C <='${endTime}'))`
+    `SELECT * WHERE ${statusCol} ='${user.id}' AND
+     ((${startTimeCol} >='${startTime}' AND ${startTimeCol} <='${endTime}') OR (${endTimeCol} >= '${startTime}' AND ${endTimeCol} <='${endTime}'))`
   )
   const leaves = leavesQuery.toJSON();
   if (leaves.length) throw 'Đã có yêu cầu nghỉ trong thời gian này';
@@ -37,9 +39,13 @@ function leaveGet({ id }) {
 }
 
 global.leaveList = leaveList;
-function leaveList(params) {
-  const { id, startTime, endTime, status } = params || {};
+function leaveList({ id, startTime, endTime, status }) {
   const user = googleUser();
+  if (!startTime && !endTime) {
+    const { start, end } = getMonthInterval(new Date());
+    startTime = start;
+    endTime = end;
+  }
   const leavesQuery = db.from<Leave>('leave').query.where('idRequester', user.id);
   if (id) {
     leavesQuery.where('id', id);

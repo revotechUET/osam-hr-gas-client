@@ -12,7 +12,7 @@ export interface Leave {
 export enum LeaveReason {
   Personal = 0,
   Duty = 1,
-  Mission = 2,
+  Business = 2,
 }
 
 export enum LeaveStatus {
