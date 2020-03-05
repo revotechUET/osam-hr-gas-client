@@ -4,12 +4,15 @@ export default {
     spreadsheetId,
     sheetSpecs: {
       user: ['id', 'email', 'role', 'name', 'active', 'idContract'],
-      department: ['id', 'name', 'active', 'idManager', 'idApprovers'],
+      department: ['id', 'name', 'active', 'idManager', 'idApprovers', 'idGroup'],
       user_department: ['id', 'idUser', 'idDepartment'],
-      contract: ['id', 'name', 'type', 'lunch', 'leaveRequest'],
-      checking: ['id', 'date', 'checkinTime', 'checkoutTime', 'reportContent', 'responseContent', 'reportStatus', 'idUser', 'note', 'point', 'lunch'],
-      leave: ['id', 'startTime', 'endTime', 'reason', 'description', 'status', 'idRequester', 'idApprover'],
-      notification: ['id', 'title', 'content', 'type', 'receipient', 'status'],
+      contract: [
+        ['id', 'name', 'type', 'lunch', 'leaveRequest'],
+        ['aaaaaaaa', 'Chính thức', 'fulltime', true, true],
+      ],
+      checking: ['id', 'date', 'checkinTime', 'checkoutTime', 'reportContent', 'responseContent', 'reportStatus', 'idUser', 'note'],
+      leave: ['id', 'startTime', 'endTime', 'reason', 'description', 'status', 'idRequester', 'idApprover', 'deletedReason', 'eventId'],
+      notification: ['id', 'title', 'content', 'type', 'date', 'receipient', 'status', 'sendDate'],
       setting: [
         ['id', 'welcomeMessage', 'monthEnd', 'yearEnd', 'morningStart', 'morningEnd', 'afternoonStart', 'afternoonEnd', 'lunchStart', 'lunchEnd', 'workDays'],
         ['0', 'Chúc bạn ngày mới vui vẻ', '1', '0', '1999-01-01T02:00:00.000Z', '1999-01-01T05:00:00.000Z', '1999-01-01T06:00:00.000Z', '1999-01-01T11:00:00.000Z', '1999-01-01T04:30:00.000Z', '1999-01-01T07:30:00.000Z', '[0, 3, 3, 3, 3, 3, 1]']

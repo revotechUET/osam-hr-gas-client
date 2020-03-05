@@ -19,5 +19,5 @@ export enum LeaveStatus {
   Waiting = 'waiting',
   Approved = 'approved',
   Rejected = 'rejected',
-  Expired = 'expired',
+  Deleted = 'deleted',
 }

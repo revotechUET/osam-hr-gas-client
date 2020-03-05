@@ -11,19 +11,8 @@ global.userInfo = userInfo;
 export function userInfo({ full = false, loadDepartments = false, loadContracts = false } = {}) {
   const email = Session.getActiveUser().getEmail();
   const user = db.from<User>('user').query.where('email', email).toJSON(1)[0];
-  // if (!user) {
-  //   const newUser: User = {
-  //     id: gUser.id,
-  //     email: gUser.email,
-  //     active: 1,
-  //     name: gUser.displayName,
-  //     role: UserRole.User,
-  //   }
-  //   db.from('user').insert(newUser);
-  //   return newUser;
-  // }
   if (!user || !user.active) {
-    throw 'User is not activated';
+    throw 'Tài khoản không có quyền truy cập';
   }
   if (full || loadContracts) {
     user.contract = db.from<Contract>('contract').query.where('id', user.idContract).toJSON(1)[0];
@@ -34,4 +23,9 @@ export function userInfo({ full = false, loadDepartments = false, loadContracts 
     user.departments = departments.filter(d => userDepartments.find(ud => ud.idDepartment === d.id));
   }
   return user;
+}
+
+global.listUser = listUser;
+function listUser() {
+  return db.from<User>('user').getDataJSON();
 }

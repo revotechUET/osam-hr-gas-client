@@ -1,10 +1,19 @@
 import { SpreadSheetDB } from 'gsheetdb';
 import config from '../config';
+import { getService } from './services';
 
-export let db: SpreadSheetDB;
-export function init() {
-  db = new SpreadSheetDB({
-    source_url: config.sheetUrl,
-    sheetSpecs: {},
-  });
-}
+let _db: SpreadSheetDB;
+(() => {
+  const service = getService();
+  if (service.hasAccess()) {
+    _db = new SpreadSheetDB({
+      ...config.spreadsheet,
+      accessToken: service.getAccessToken(),
+      init: true,
+    });
+  } else {
+    throw service.getLastError();
+  }
+})();
+
+export const db = _db;

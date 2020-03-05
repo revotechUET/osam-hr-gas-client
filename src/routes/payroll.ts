@@ -1,4 +1,4 @@
-import { areIntervalsOverlapping, eachDayOfInterval, eachMonthOfInterval, endOfDay, getDaysInMonth, isSameDay, startOfDay, subMonths } from 'date-fns';
+import { addMonths, areIntervalsOverlapping, eachDayOfInterval, eachMonthOfInterval, endOfDay, getDaysInMonth, isSameDay, min, startOfDay } from 'date-fns';
 import { Leave, LeaveReason, LeaveStatus } from '../@types/leave';
 import { db } from '../db';
 import { getEvents } from './calendar';
@@ -16,12 +16,12 @@ export function getMonthInterval(dateInMonth?, raw = false) {
   const date = dateInMonth.getDate();
   const maxDay = getDaysInMonth(dateInMonth);
   if (date <= setting.monthEnd) {
-    const prevMonth = subMonths(dateInMonth, 1);
+    const prevMonth = addMonths(dateInMonth, -1);
     const prevMonthMaxDay = getDaysInMonth(prevMonth);
     start.setMonth(prevMonth.getMonth(), Math.min(prevMonthMaxDay, setting.monthEnd) + 1);
     end.setDate(Math.min(maxDay, setting.monthEnd));
   } else {
-    const nextMonth = subMonths(dateInMonth, 1);
+    const nextMonth = addMonths(dateInMonth, 1);
     const nextMonthMaxDay = getDaysInMonth(nextMonth);
     start.setDate(Math.min(maxDay, setting.monthEnd) + 1);
     end.setMonth(nextMonth.getMonth(), Math.min(nextMonthMaxDay, setting.monthEnd));
@@ -48,17 +48,19 @@ function getPayroll({ startDate, endDate, setting = null }) {
     .where('date', '<=', endDate)
     .toJSON()
     .map(c => ({ date: new Date(c.date), checkinTime: new Date(c.checkinTime), checkoutTime: new Date(c.checkoutTime) }));
-  const leavesQuery = db.from<Leave>('leave').query
-  const [statusCol, idRequesterCol, startTimeCol, endTimeCol] = ['status', 'idRequester', 'startTime', 'endTime'].map(leavesQuery.getColId.bind(leavesQuery));
-  leavesQuery.raw(
-    `SELECT * WHERE ${statusCol} ='${LeaveStatus.Approved}' AND ${idRequesterCol} ='${id}' AND
-     ((${startTimeCol} >='${startDate}' AND ${startTimeCol} <='${endDate}') OR (${endTimeCol} >= '${startDate}' AND ${endTimeCol} <='${endDate}'))`
-  )
-  const leaves = leavesQuery.toJSON()
-    .map(l => ({ startTime: new Date(l.startTime), endTime: new Date(l.endTime) }));
+  let leaves = [];
+  if (contract.leaveRequest) {
+    const leavesQuery = db.from<Leave>('leave').query
+    const [statusCol, idRequesterCol, startTimeCol, endTimeCol] = ['status', 'idRequester', 'startTime', 'endTime'].map(leavesQuery.getColId.bind(leavesQuery));
+    leavesQuery.raw(
+      `SELECT * WHERE ${statusCol} ='${LeaveStatus.Approved}' AND ${idRequesterCol} ='${id}' AND
+       ((${startTimeCol} >='${startDate}' AND ${startTimeCol} <='${endDate}') OR (${endTimeCol} >= '${startDate}' AND ${endTimeCol} <='${endDate}'))`
+    )
+    leaves = leavesQuery.toJSON()
+      .map(l => ({ startTime: new Date(l.startTime), endTime: new Date(l.endTime) }));
+  }
   setting = setting || getSetting();
   const events = getEvents(1, new Date(startDate), new Date(endDate)).events;
-  console.log(events);
   const daysOff = [];
   for (const event of events) {
     daysOff.push(...eachDayOfInterval({ start: new Date(event.start), end: new Date(event.end) }));
@@ -77,17 +79,17 @@ function getPayrollThisMonth({ dateInMonth = null } = {}) {
   const date = dateInMonth.getDate();
   const maxDay = getDaysInMonth(dateInMonth);
   if (date <= setting.monthEnd) {
-    const prevMonth = subMonths(dateInMonth, 1);
+    const prevMonth = addMonths(dateInMonth, -1);
     const prevMonthMaxDay = getDaysInMonth(prevMonth);
     startDate.setMonth(prevMonth.getMonth(), Math.min(prevMonthMaxDay, setting.monthEnd) + 1);
     endDate.setDate(Math.min(maxDay, setting.monthEnd));
   } else {
-    const nextMonth = subMonths(dateInMonth, 1);
+    const nextMonth = addMonths(dateInMonth, 1);
     const nextMonthMaxDay = getDaysInMonth(nextMonth);
     startDate.setDate(Math.min(maxDay, setting.monthEnd) + 1);
     endDate.setMonth(nextMonth.getMonth(), Math.min(nextMonthMaxDay, setting.monthEnd));
   }
-  return getPayroll({ startDate: startDate.toISOString(), endDate: endDate.toISOString() });
+  return getPayroll({ startDate: startDate.toISOString(), endDate: min([endDate, new Date()]).toISOString() });
 }
 
 function getSummaries({ startDate, endDate, checkings, leaves, setting, contract }) {
@@ -203,11 +205,11 @@ function getDateSummaries(date: Date, checking, leave, setting, contract) {
   point = point1 + point2;
   permittedLeave = permittedLeave1 + permittedLeave2;
   unpermittedLeave = unpermittedLeave1 + unpermittedLeave2;
-  if (leave && leave.reason != LeaveReason.Personal) {
-    point += permittedLeave;
-    permittedLeave = 0;
-  } else if (!contract.leaveRequest) {
+  if (!contract.leaveRequest) {
     unpermittedLeave += permittedLeave;
+    permittedLeave = 0;
+  } else if (leave && leave.reason != LeaveReason.Personal) {
+    point += permittedLeave;
     permittedLeave = 0;
   }
   return { point: +point.toFixed(2), lunch, permittedLeave: +permittedLeave.toFixed(2), unpermittedLeave: +unpermittedLeave.toFixed(2) };
@@ -225,8 +227,7 @@ function getRemainingLeaves() {
   for (const event of events) {
     daysOff.push(...eachDayOfInterval({ start: new Date(event.start), end: new Date(event.end) }));
   }
-  setting = { ...setting, daysOff, contractType: contract.type };
-  return _getTotalPermittedLeaves(setting) - _getPermittedLeaves(leaves, setting);
+  return _getTotalPermittedLeaves(setting) - _getPermittedLeaves(leaves, {...setting, daysOff}, contract);
 }
 
 function _getThisYearInterval(setting) {
@@ -246,8 +247,8 @@ function _getThisYearInterval(setting) {
 function _getTotalPermittedLeaves(setting) {
   return eachMonthOfInterval(_getThisYearInterval(setting)).length;
 }
-function _getPermittedLeaves(leaves, setting) {
-  const ratio = setting.contractType === 'parttime' ? 1 : 0.5;
+function _getPermittedLeaves(leaves, setting, contract) {
+  const ratio = contract.type === 'parttime' ? 1 : 0.5;
   let permittedLeaves = 0;
   for (const leave of leaves) {
     const startTime = new Date(leave.startTime);

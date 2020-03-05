@@ -18,6 +18,7 @@ import config from '../../config';
 const calendarIds = config.calendarIds;
 
 global.getEventsOfThisMonth = getEventsOfThisMonth;
+global.getEventsOfMonth = getEventsOfMonth;
 global.createEvent = createEvent;
 global.updateEvent = updateEvent;
 global.deleteEvent = deleteEvent;
@@ -79,7 +80,29 @@ function getEventsOfThisMonth({ calendarIdx = 0,  startDate = 1 }) {
     return _loadEvents(calendarIdx, start, end);
 }
 
-function createEvent({calendarIdx = 0, summary, description, start, end, emails = []}) {
+function getEventsOfMonth({ calendarIdx = 0, startDate = 1, date, buffer = 0}) {
+  var aDate;
+  if ( !date ) {
+    aDate = new Date();
+  }
+  else {
+    aDate = new Date(date);
+  }
+  let month = aDate.getMonth();
+
+  let start = new Date(aDate);
+  start.setDate(startDate);
+  start.setMonth(month);
+
+  let end = new Date(start);
+  end.setMonth(month + 1);
+
+  if (buffer) {
+    start.setMonth(month - buffer);
+  }
+  return _loadEvents(calendarIdx, start, end);
+}
+export function createEvent({calendarIdx = 0, summary, description, start, end, emails = []}) {
     var calendarId = calendarIds[calendarIdx];
     var event = _createEvent(calendarId,{
         summary, description,
@@ -95,7 +118,7 @@ function createEvent({calendarIdx = 0, summary, description, start, end, emails 
     return event;
 }
 
-function updateEvent({calendarIdx = 0, eventId, summary, description, start, end, emails = []}) {
+export function updateEvent({calendarIdx = 0, eventId, summary, description, start, end, emails = []}) {
   var calendarId = calendarIds[calendarIdx];
   var event = _updateEvent(calendarId, eventId, {
     summary, description, start: {dateTime:start}, end: {dateTime:end},
