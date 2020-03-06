@@ -4,7 +4,7 @@
   "description": "",
   "dependencies": {
     "date-fns": "^2.9.0",
-    "gsheetdb": "github:revotechUET/gsheetdb#ad709b5",
+    "gsheetdb": "github:revotechUET/gsheetdb#663de5f",
     "uniqid": "^5.2.0",
     "uuid": "^3.4.0"
   },

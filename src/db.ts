@@ -1,4 +1,5 @@
-import { SpreadSheetDB } from 'gsheetdb';
+// import { SpreadSheetDB } from 'gsheetdb';
+import { SpreadSheetDB } from '../../gsheetdb';
 import config from '../config';
 import { getService } from './services';
 
@@ -17,3 +18,11 @@ let _db: SpreadSheetDB;
 })();
 
 export const db = _db;
+
+/*
+// @ts-ignore
+export const db = new gsheetdb.SpreadSheetDB({
+  ...config.spreadsheet,
+  // init: true,
+});
+ */

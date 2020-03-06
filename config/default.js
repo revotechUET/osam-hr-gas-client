@@ -1,4 +1,4 @@
-const spreadsheetId = '1uEYFEuYKH8gYHicVcTCDiICCQwyw0cvQ5ND64GMds8A';
+const spreadsheetId = '1tLzfJvvkk-2-99hiWeH3NpEeHCqk94OY4iLz6qB5P0w';
 export default {
   spreadsheet: {
     spreadsheetId,
