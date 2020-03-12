@@ -208,5 +208,19 @@ function leaveDelete({ id, status, deletedReason }) {
 
 global.leaveEdit = leaveEdit;
 function leaveEdit({ id, startTime, endTime, reason, description, idRequester, idApprover }) {
-  return db.from<Leave>('leave').update(id, { startTime, endTime, reason, description, idRequester, idApprover });
+  const ok = db.from<Leave>('leave').update(id, { startTime, endTime, reason, description, idRequester, idApprover });
+  if (!ok) return ok;
+  const user = userInfo();
+  const leaveWithUser = db.join<Leave, User>('leave', 'user', 'idRequester', 'user').sWhere('id', id).toJSON()[0];
+  const requester = leaveWithUser.user;
+  if (user.id === requester.id) return ok;
+  sendMail('new', [requester.email], {
+    approver: user.name,
+    startTime: leaveWithUser.startTime,
+    endTime: leaveWithUser.endTime,
+    reason: LeaveReason[leaveWithUser.reason],
+    id: leaveWithUser.id,
+    description: leaveWithUser.description
+  });
+  return ok;
 }

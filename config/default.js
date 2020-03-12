@@ -21,22 +21,19 @@ export default {
   },
   serviceAccount: {
     "type": "service_account",
-    "project_id": "osam-hr",
-    "private_key_id": "99c4cb378cc9b2e3c2397c96b4dd005c339eb55e",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDT6xNFAq93bZck\n5Nw7aKsk3IsD4DdIggeYs1oCvrm+16QmhjWzzQ7++sTTYtL+XIf0EChDr60MLoxJ\nWP87523kFFPZ7iwwW7mI6WxlrSBv4KFHEFKtceCl5MjZBOsr9zvrD1nuXe1UCIRX\n6BP/pVx7S22SoohwCqq3schtk3z4LcjcR41xHdnF2/LGJrG62OnPSjSAmpJchUzU\ntMN0h+YH9kALMLDTyfbYC4Brn7Figvnd+/vtMLEUs4RymlUKArhqA4/4AT8I3idN\nf14WUc4mmQoQ5Q33Sbkrh6bLdwvQHfIrPzH4mW9HiXxx0WB2jqq9G1oksh1PCqiQ\n70V74EW5AgMBAAECggEAFK76e/9Vme331RGDT0cZgSkHZnLxYmHSlPxYWjE8Vtyc\nOGhcAHcQsiFOqaUZG9tzJ4aWL3kLhkdayOPnUXT2nE7BmmEtLfEd7DeALXJW2qSN\niS6WKziUqQxp8AiTXYCtd/VRHTtMqSmFpUDRBuAgZSZJBQlZELpxzCkNe2hsR5qe\n5i2sRM5FRmwDdqsNlk1lqvvtJ4l/+uw/+XUTLd5XsWhTxCSQrTjcX3lLXKSLK+sB\nojOrkZbpb3jqWxjGSDB/k+Csse4+5c5xv2raYTfsD7bt3TGxltPIK6rX/GDbyR7i\nATt3jzUReO3/CGuY+sHP8PcE1VQaqTg/IuQy7bM74wKBgQDvx46TqZwKVtvX7Hi5\npKT90FybvvdTer9yb7JZePOv4QUNPxqr7tyk/CyaJcpKHHSBOeEvoOUCgsci+20X\nUXZNaJFsk0pMsTbdSbDXWk3aGxxTmjOqtYnFo2GFhnlIis8RGwsLTvoRmCs9dZCA\ne8A4mla4W+W3VEM0Q4nf8F8t2wKBgQDiQQYeuGrQgai4v9hDEtJUZcz0DDt32y4Y\nHrqhGFqT2nWk1z0l0h2Al053kyPA8bkpnAcyTa1atXLhkzoSrcV6f8PMzUYxHVkQ\nbcz5O/QNrGVBvCDq2aNV8ptJs+XsVYKfV750emlehowNdizEly4mdp2UJJxz2q9t\nSwBZPgPw+wKBgBdU2qnBoj5bT08GYoTl4WwVHz3EajqEQia3eao9G7Esexpb3pOG\nTY/8PbbOII3vkOKWKDRDOqVw5kGgJ3BSa+mCWEwxVNR7lfQYXI3H6rVjV/FGmups\nebhyemXMvPZzE0z9zahPCgQ2Q1banrHx2LVpRzDvOD4Lg/KM89iHgitrAoGAdrGg\nEUu0FZB/v/Q88usT1lzViY5FQFqGsvaj99E762bm4sRb+tRgz84QxyA02Iq3FcIZ\n8GTZtcWM8BP5mkT5XYtbX7ysvyVjTQAdUP8HyIiRUkvshOgKDRPKLX8n9rThYtB4\nRMjXMFSrcoB1eejJuDnv7wDJ5ulpsI9xLmAfVzMCgYA/f9a4JU3BGSdluF8iTEYw\nUCjYsHY/YdvhKW0T70NTA6pwDUxQkwGATRs+RD2Qj5vQkNVrREvHHSM7qw4KK5Ou\nf79p8uJntpusgEp0SSlH+9ihome111+JEWxwLsxPn1mSbrkGKqZKS7GwM5MkZkwY\nniEMMFD9jsw44StcGXK4NA==\n-----END PRIVATE KEY-----\n",
-    "client_email": "test-607@osam-hr.iam.gserviceaccount.com",
-    "client_id": "110757234229754123641",
+    "project_id": "osam-hr-270302",
+    "private_key_id": "18946e76a8dd9d4119df91e3a347bd74c8596865",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQChG/KxQBwkND53\ntLwSPGKKA6kWqpHg6E1CiAbDOBxQ1TLjd9Rf1W0gWEuoVWGzTmBbGUH9RkJj2TOK\nE6mD4BkphuttoriBJGiRReXrgmT88PoZi2irDmb4056hOq/RHNVh8dbej1kZzogj\nNugnXU3eYEldV3H0k8R+PHkyFLXszgmJWszuoSZsVa2D/tCIR0uss4RaktYS4MYF\nPv2v+4+HWWvPcXI2uLC9Mwau4Ay1rDZ7jqIJREaLuoWPWfgxdScJMbUkzRIe8SYy\n24Kt74w91HhrDoBOugKuDb+9vwt/Vp4N6/l5jeMttujsD9sv1aesOVbpBA90Y6fB\nznKMn6NxAgMBAAECggEAANdBNXcIO+ajZv3JclQVxL1h5qls0eZjJSxJ/RRtWRJ8\ncww4g9MHSvvMUkm2yl19JSs9CU4ScYxhcjB/Kh4TbOBvGQnYP2v3Q+nVhOdacP5Y\nzyUSKTwNzMboTSmzSkq68N7MSv9Rx6+9+BFqFa7X8Ge4KPhDEvO/UD7ZzZQm18Br\nP40UEEJ32AmRbTllCkILpOqWmdAWhPKF0JSLbtYya650Zd8DKKcRDAsR2MM0E3K3\nSisCaLKd5cp9emUc4iyEdaVHLClqHH5/UKTHXorEwXjHd1wsbaKyRdgUgqryPtN4\nkjTKYQitcptjdmkkVUlf73G3aex1xLtki8L4cIXBGQKBgQDLmdgbbb9Cg68UrCHI\nYw8zfwPYol/Rt8tNhOsKkFdWxkEh1Eim99Ku0vRiyG14r650CdIEKoopCEM0Mjok\nu/rt7NUMZ3wV4KffrNVxVq8azjfQ9uwI+/mfILShs5VdzZzDWCL2mItkBHPl7BWd\ncasCGUHxyBsxvEnWryTnrFxZuQKBgQDKko1d1G9s1tj0/sqnK2xfL0ouVcsL0Fcb\nThGj0I1LhndgOMlIPNPVPORRArHxX05CBD1asqSWpNMk6ssbAGtvWD87SwUALb01\nk/SoGY6+qG/DMqpnv66WmnZibjzUMPyy8OQsFNQbV6nPCiDKcSOmrSRYhLQU3e7C\nlLlL4xSTeQKBgD8rtp+cB5Gtpe72EW1JPvgtWpYmmzBIpG2i5gJbEp472Q2T/g7A\nKcBQd78GjOC7MZeTTHQ6dq+Qfrl9NAkdwhd8OgYlPZzUHYIK8BbAXIgmn67YThfj\nhmnXDfR18cwu9Yqul/qHDgi0UPlvrK0zDWoTSCCqg7WExCw2H286TVURAoGBAID/\njnKAA2zl7Ecnsdl+t4Zt0OlszN57D91de7I77p53xLFLuDH+Ok+CdUp5UuOIc4dq\nt794H4Om9qZ9tlU9kSzYn3ucrFSOy/zAeX5KuDIFhRZiv01OLVnOhzDrTmU5xNIW\nwNapdODslEA6DOOd5LwRaiHMb/kR0yeqGc2Pj9zRAoGAH2GYB/Jdy60OxmoWK5el\nZaSymU0VmYMKiq4zq2iFTDS59a11C4xfIDb5+EtuGPXkETOtPual7ZlXv9O71kxd\nMld99Yxf9U1eAM2NhPwVggbLrGFSaf75eAFeeTriG7wbdUea1p98IGGm/xm28sWY\nxAV6tZ2oR/Und9VD+BqnyI8=\n-----END PRIVATE KEY-----\n",
+    "client_email": "osamhr@osam-hr-270302.iam.gserviceaccount.com",
+    "client_id": "108275210996835245455",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test-607%40osam-hr.iam.gserviceaccount.com",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/osamhr%40osam-hr-270302.iam.gserviceaccount.com",
     "scopes": [
       "https://www.googleapis.com/auth/spreadsheets",
-    ]
+    ],
+    "adminEmail": "admin@sfirm.page",
   },
-  calendarIds: [
-    "rvtcompany.page_fqbe7o1ko3qu7m1fs1njfefi2o@group.calendar.google.com",
-    "rvtcompany.page_fqbe7o1ko3qu7m1fs1njfefi2o@group.calendar.google.com"
-  ], // [leave request, day-off]
-
+  calendarIds: ["sfirm.page_jtrgrehl32lg6a9o0aq2rl3amk@group.calendar.google.com", "sfirm.page_jtrgrehl32lg6a9o0aq2rl3amk@group.calendar.google.com"], // [leave request, day-off]
 }

@@ -26,13 +26,10 @@ module.exports = {
     minimizer: [
       new TerserPlugin({
         terserOptions: {
-          mangle: isProduction,
+          mangle: false,
           compress: {
             drop_console: isProduction,
             drop_debugger: isProduction
-          },
-          output: {
-            beautify: !isProduction
           }
         }
       })
@@ -45,5 +42,5 @@ module.exports = {
   plugins: [
     new GasPlugin(),
   ],
-  mode: isProduction ? 'production' : 'none',
+  mode: 'none',
 };

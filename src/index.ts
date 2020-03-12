@@ -1,4 +1,4 @@
-import './db'
+import './webApp'
 import './routes/test'
 import './routes/user'
 import './routes/checking'

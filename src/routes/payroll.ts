@@ -218,8 +218,8 @@ function getDateSummaries(date: Date, checking, leave, setting, contract) {
 global.getRemainingLeaves = getRemainingLeaves;
 function getRemainingLeaves() {
   const { id, contract } = userInfo({ loadContracts: true });
-  if (!contract.leaveRequest) return 0;
   let setting = getSetting();
+  if (!contract.leaveRequest) return _getTotalPermittedLeaves(setting);
   const { start, end } = _getThisYearInterval(setting);
   const leaves = db.from<Leave>('leave').query.where('idRequester', id).where('status', LeaveStatus.Approved).where('endTime', '>', start.toISOString()).toJSON();
   const daysOff = [];

@@ -1,5 +1,4 @@
-// import { SpreadSheetDB } from 'gsheetdb';
-import { SpreadSheetDB } from '../../gsheetdb';
+import { SpreadSheetDB } from 'gsheetdb';
 import config from '../config';
 import { getService } from './services';
 
